@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  broker:
+    image: docker.havij.ai/havij/cassandra-connection-check:0.0.1
+    hostname: cassandra-connection-check
+    container_name: cassandra-connection-check
+    restart: always
+    environment:
+      - BROKER_CASSANDRA_HOSTS=192.168.70.21
+      - BROKER_CASSANDRA_DATACENTER=dc1
+      - BROKER_CASSANDRA_PORT=9042
+      - BROKER_CASSANDRA_KEYSPACE=nazari_broker
+      - BROKER_CASSANDRA_USER=cassandra
+      - BROKER_CASSANDRA_PASSWORD=cassandra
+      - BROKER_CASSANDRA_CONSISTENCY=LOCAL_ONE
+      - BROKER_CASSANDRA_PAGE_SIZE=5000
+      - BROKER_CASSANDRA_TIMEOUT=16000
+      - BROKER_CASSANDRA_PARTITION_SIZE=10
+
+      - BROKER_CORE_SERVICE_NAME=cassandra-connection-check
+      - BROKER_LOG_LEVEL=DEBUG

@@ -1,0 +1,38 @@
+# helm install cassandra-connection-check ./deploy/helm
+
+replicaCount: 1
+
+namespace: havij
+chert: n5
+
+serviceVersion: 0.0.13
+
+image:
+  repository: "docker.havij.ai/havij"
+  pullPolicy: IfNotPresent
+
+podAnnotations: { }
+
+env:
+  - name: TZ
+    value: Asia/Tehran
+
+service:
+  groups:
+    type: NodePort
+    ports:
+      - name: http
+        port: 4040
+        nodePort: 30821
+        targetPort: 4040
+
+nodeSelector: { }
+
+tolerations: [ ]
+
+affinity: { }
+
+commonLabels:
+  app: cassandra-connection-check
+
+hosts: ["cassandra-test.default.svc.cluster.local"]

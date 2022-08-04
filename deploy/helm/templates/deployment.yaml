@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        helm.sh/chart: {{ .Release.Name }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ .Release.Name }}
+        chert: {{ .Values.chert }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-container
+          image: "{{ .Values.image.repository }}/{{ .Chart.Name }}:{{ .Values.serviceVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 4040
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 4040
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            failureThreshold: 3
+
+      imagePullSecrets:
+      - name: behnam-docker-artifactory
