@@ -1,0 +1,1 @@
+# go-cassandra-check-connection
